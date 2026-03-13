@@ -22,7 +22,7 @@ vim.opt.smartcase = true -- case sensitive if uppercase in string
 vim.opt.hlsearch = true -- highlight search matches
 vim.opt.incsearch = true -- show matches as you type
 
-vim.opt.signcolumn = "yes" -- always show a sign column
+vim.opt.signcolumn = "auto" -- always show a sign column
 vim.opt.colorcolumn = "100" -- show a column at 100 position chars
 vim.opt.showmatch = true -- highlights matching brackets
 vim.opt.cmdheight = 1 -- single line command line
@@ -110,7 +110,7 @@ vim.opt.scrolloff = 8 -- Keep 8 lines visible above/below cursor
 vim.opt.sidescrolloff = 8
 vim.opt.expandtab = true
 vim.keymap.set('n', '<leader>h', ':nohlsearch<CR>')
-vim.g.background = "light"
+vim.g.background = "dark"
 vim.opt.signcolumn = "auto"
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
@@ -144,6 +144,7 @@ vim.opt.directory = data_dir .. "/swap//"
 
 -- Backup settings
 vim.opt.backup = false
+-- vim.opt.backupdir = data_dir .. "/backup//"
 vim.opt.writebackup = false
 vim.opt.swapfile = false
 

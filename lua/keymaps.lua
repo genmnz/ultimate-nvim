@@ -56,16 +56,14 @@ end, { desc = "Toggle diagnostics" })
 
 
 
+
 -- Fix common typos
 vim.api.nvim_create_user_command('W', 'w', {})
 vim.api.nvim_create_user_command('Q', 'q', {})
 vim.api.nvim_create_user_command('Wq', 'wq', {})
 vim.api.nvim_create_user_command('WQ', 'wq', {})
-
-
--- other nonsesne
 vim.keymap.set('n', '<leader>w', '<cmd>write<cr>', {desc = 'Save'})
-vim.keymap.set('n', '<leader>q', '<cmd>q<cr>', {desc = 'Quit'})
+vim.keymap.set('n', '<leader>q', '<cmd>q!<cr>', {desc = 'Quit'})
 vim.keymap.set("n", "<leader>ee", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
 vim.keymap.set("n", "<leader>ef", "<cmd>NvimTreeFindFileToggle<CR>", { desc = "Toggle file explorer on current file" })
 

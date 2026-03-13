@@ -9,9 +9,7 @@ vim.pack.add({
 		branch = "main",
 		build = ":TSUpdate",
 	},
-  --colorschemes
-	-- "https://github.com/jalvesaq/southernlights",
-	-- Language Server Protocols
+  	-- Language Server Protocols
 	"https://www.github.com/neovim/nvim-lspconfig",
 	"https://github.com/mason-org/mason.nvim",
 	"https://github.com/creativenull/efmls-configs-nvim",
@@ -20,21 +18,16 @@ vim.pack.add({
 		version = vim.version.range("1.*"),
 	},
 	"https://github.com/L3MON4D3/LuaSnip",
---   "https://github.com/norcalli/nvim-colorizer.lua"
 })
 
 local function packadd(name)
 	vim.cmd("packadd " .. name)
 end
 packadd("nvim-treesitter")
--- packadd("nvim-colorizer")
 packadd("gitsigns.nvim")
 packadd("mini.nvim")
 packadd("fzf-lua")
 packadd("nvim-tree.lua")
---packadd("vim-skittles-theme")
--- packadd("jalvesaq/southernlights")
--- vim.cmd.colorscheme("") -- load the colorscheme
 -- LSP
 packadd("nvim-lspconfig")
 packadd("mason.nvim")
@@ -145,6 +138,11 @@ require("mini.comment").setup({})
 require("mini.move").setup({})
 require("mini.surround").setup({})
 require("mini.cursorword").setup({})
+require("mini.pairs").setup({})
+require("mini.trailspace").setup({})
+require("mini.bufremove").setup({})
+require("mini.notify").setup({})
+require("mini.icons").setup({})
 require("mini.indentscope").setup({
 	draw = {
 	options = {border = 'both',
@@ -153,11 +151,6 @@ require("mini.indentscope").setup({
   },
 	},
 })
-require("mini.pairs").setup({})
-require("mini.trailspace").setup({})
-require("mini.bufremove").setup({})
-require("mini.notify").setup({})
-require("mini.icons").setup({})
 
 require("gitsigns").setup({
 	signs = {
@@ -198,3 +191,41 @@ end, { desc = "Toggle inline blame" })
 vim.keymap.set("n", "<leader>hd", function()
 	require("gitsigns").diffthis()
 end, { desc = "Diff this" })
+
+
+-- luasnip
+local luasnip = require("luasnip")
+
+require("blink.cmp").setup({
+	highlight = {
+		bg = "#FF03F7",	
+	},
+	snippet = {
+		 expand = function(snippet)
+        require("luasnip").lsp_expand(snippet.body)
+    end,
+	},
+	keymap = {
+		preset = "default",
+		["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
+		["<CR>"] = { "accept", "fallback" },
+		["<C-n>"] = { "select_next", "fallback" },
+		["<C-p>"] = { "select_prev", "fallback" },
+		["<C-j>"] = { "select_next", "fallback" },
+		["<C-k>"] = { "select_prev", "fallback" },
+		["<C-u>"] = { "scroll_documentation_up", "fallback" },
+		["<C-d>"] = { "scroll_documentation_down", "fallback" },
+	},
+})
+
+-- luasnip keymaps (after plugins are loaded)
+vim.keymap.set({ "i", "s" }, "<Tab>", function() luasnip.jump(1) end, { silent = true, desc = "Jump forward" })
+vim.keymap.set({ "i", "s" }, "<S-Tab>", function() luasnip.jump(-1) end, { silent = true, desc = "Jump backward" })
+vim.keymap.set({ "i", "s" }, "<C-L>", function() luasnip.jump(1) end, { silent = true, desc = "Jump forward" })
+vim.keymap.set({ "i", "s" }, "<C-J>", function() luasnip.jump(-1) end, { silent = true, desc = "Jump backward" })
+vim.keymap.set({ "i" }, "<C-K>", function() luasnip.expand() end, { silent = true, desc = "Expand snippet" })
+vim.keymap.set({ "i", "s" }, "<C-E>", function()
+	if luasnip.choice_active() then
+		luasnip.change_choice(1)
+	end
+end, { silent = true, desc = "Change choice" })

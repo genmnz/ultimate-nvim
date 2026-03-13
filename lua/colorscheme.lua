@@ -1,15 +1,3 @@
--- local colorscheme = 'moonfly'
-
--- -- Create autocmd to set highlights after colorscheme changes
--- vim.api.nvim_create_autocmd("ColorScheme", {
---     pattern = "*",
---     callback = function()
---         vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#ff0000", bold = true }) -- Vibrant red for current line
---         vim.api.nvim_set_hl(0, "LineNr", { fg = "#ffffff" }) -- Faded red for other lines af5f5f
---     end
--- })
-
--- -- Enable cursorline
 -- vim.opt.cursorline = true
 
 
@@ -20,12 +8,14 @@ local c = {
     function_fg = "#87d7ff",
     title_fg = "#00d7ff",
     -- normal_fg = "#dadada",
-    normal_fg = "#5fafff",
+    normal_fg = "#5fafff", -- #B0B5B9 gray for normal text, also used for cursor foreground
     error_bg = "#ff0000",
     warn_fg = "#ff7700",
     info_fg = "#a3ff3a",
     hint_fg = "#2bffff",
     numbers_fg = "#ff0000",
+    pink = "#ff5f87", -- for keywords and such, also used for cursor line number highlight
+    bright_blue = "#5fafff",
     -- numbers_fg --for cursor line number highlight
 }
 
@@ -96,11 +86,12 @@ local basic_tbl = {
     Typedef = { fg = "#87d7af" },
     Underlined = { underline = true },
     Variable = { fg = "#bffce8" },
-    Visual = { fg = "#a8a8a8", bg = "#3a3a3a" },
+    -- Visual = { fg = "#a8a8a8", bg = "#3a3a3a" },
     VisualNOS = { bold = true, underline = true },
     WarningMsg = { fg = c.warn_fg },
     WinSeparator = { fg = c.windiv_bg, bg = "#000000" },
-    MiniIndentscopeSymbol = { fg = "#d7ffaf" },
+    MiniIndentscopeSymbol = { fg = "#808080" },
+    MiniIndentscopePrefix = { fg = "#d7ffaf" },
 
     -- html
     htmlLink = { underline = true, fg = "#97b7ff" },
