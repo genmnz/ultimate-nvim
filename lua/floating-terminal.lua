@@ -3,9 +3,14 @@
 -- ============================================================================
 vim.api.nvim_create_autocmd("TermClose", {
 	group = augroup,
-	callback = function()
+	callback = function(args)
+		-- keep buffers that want to stay (e.g. the markdown glow preview, so its
+		-- rendered output remains visible and scrollable after glow exits)
+		if vim.b[args.buf].keep_on_exit then
+			return
+		end
 		if vim.v.event.status == 0 then
-			vim.api.nvim_buf_delete(0, {})
+			pcall(vim.api.nvim_buf_delete, args.buf, {})
 		end
 	end,
 })
@@ -62,9 +67,24 @@ local function FloatingTerminal()
 		end
 	end
 	if not has_terminal then
-		-- Use SHELL on Unix, fallback to cmd.exe on Windows
-		local shell = os.getenv("SHELL") or (vim.fn.has("win32") == 1 and "cmd.exe" or "bash")
-		vim.fn.termopen(shell)
+		-- Pick a real interactive shell and launch it with the LIST form so Neovim
+		-- runs it DIRECTLY (no 'shell'/'shellcmdflag' wrapping). On this machine
+		-- vim.o.shell is Git bash but shellcmdflag is cmd-style "/s /c", so the
+		-- string form produced `bash.exe /s /c ...` -> exit 127. Avoid all that.
+		local shell
+		if vim.fn.has("win32") == 1 then
+			-- Prefer Windows PowerShell 5.1 (pwsh 7 is broken on this machine:
+			-- hostfxr.dll load error), fall back to cmd.exe.
+			if vim.fn.executable("powershell") == 1 then
+				shell = "powershell"
+			else
+				shell = "cmd.exe"
+			end
+		else
+			shell = os.getenv("SHELL") or "bash"
+		end
+		-- jobstart({...}, {term=true}) is the modern, non-deprecated terminal API.
+		vim.fn.jobstart({ shell }, { term = true })
 	end
 
 	terminal_state.is_open = true

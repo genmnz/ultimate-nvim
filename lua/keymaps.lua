@@ -39,6 +39,12 @@ vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
 vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
 vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
+-- Duplicate line / selection (like VS Code Alt+Shift+Down / Alt+Shift+Up)
+vim.keymap.set("n", "<A-S-Down>", ":t.<CR>", { silent = true, desc = "Duplicate line down" })
+vim.keymap.set("n", "<A-S-Up>", ":t.-1<CR>", { silent = true, desc = "Duplicate line up" })
+vim.keymap.set("i", "<A-S-Down>", "<Esc>:t.<CR>gi", { silent = true, desc = "Duplicate line down" })
+vim.keymap.set("v", "<A-S-Down>", ":t'><CR>gv", { silent = true, desc = "Duplicate selection down" })
+
 vim.keymap.set("v", "<", "<gv", { desc = "Indent left and reselect" })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 

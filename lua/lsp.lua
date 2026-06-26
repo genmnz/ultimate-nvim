@@ -47,6 +47,13 @@ local function lsp_on_attach(ev)
 		return
 	end
 
+	-- Use Treesitter (not LSP semantic tokens) to drive syntax colors, so the
+	-- colorscheme's @type / @type.builtin / @type.definition and @function vs
+	-- @function.call captures actually apply instead of the green @lsp defaults.
+	if client.server_capabilities and client.server_capabilities.semanticTokensProvider then
+		client.server_capabilities.semanticTokensProvider = nil
+	end
+
 	local bufnr = ev.buf
 	local opts = { noremap = true, silent = true, buffer = bufnr }
 
@@ -132,7 +139,29 @@ require("blink.cmp").setup({
 	},
 	appearance = { nerd_font_variant = "mono" },
 	completion = { menu = { auto_show = true } },
-	sources = { default = { "lsp", "path", "buffer", "snippets" } },
+	sources = {
+		default = { "lsp", "path", "buffer", "snippets" },
+		-- Prose writing (novel): offline dictionary + thesaurus completion.
+		providers = {
+			-- 370k-word offline dictionary (lua/blink_dict.lua + dict/words_alpha.txt)
+			bigdict = {
+				name = "Dict",
+				module = "blink_dict",
+				opts = { max_items = 100, min_keyword_length = 2 },
+			},
+			-- synonyms / definitions (blink-cmp-words, WordNet, offline)
+			thesaurus = {
+				name = "Thes",
+				module = "blink-cmp-words.thesaurus",
+				opts = { score_offset = 0, similarity_depth = 2 },
+			},
+		},
+		per_filetype = {
+			markdown = { "bigdict", "thesaurus", "buffer", "snippets", "path" },
+			text = { "bigdict", "thesaurus", "buffer", "snippets", "path" },
+			gitcommit = { "bigdict", "buffer", "snippets", "path" },
+		},
+	},
 	snippets = {
 		expand = function(snippet)
 			require("luasnip").lsp_expand(snippet)

@@ -4,7 +4,10 @@ require("plugins")
 require("floating-terminal")
 require("lsp")
 require("options")
+require("autosave")
+require("prose")
 require("colorscheme").load()
+require("md")
 
 vim.opt.termguicolors = true
 -- Auto-reload colorscheme when its file is saved
@@ -316,29 +319,29 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 local function reload_theme_live()
-  local name = "southernlights"   -- ← CHANGE THIS
-
-  -- Clear cache
-  package.loaded[name] = nil
-
-  -- Load directly from current buffer (no disk write needed)
-  local content = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
-  local chunk, err = loadstring(content, name)
-  if not chunk then
-    vim.notify("❌ Syntax error:\n" .. err, vim.log.levels.ERROR)
-    return
+  -- Reload the colorscheme module from disk and re-apply it. Works from any
+  -- buffer (the old version parsed the *current* buffer as Lua, which errored
+  -- whenever you weren't editing colorscheme.lua).
+  for k, _ in pairs(package.loaded) do
+    if k:match("^colorscheme") then
+      package.loaded[k] = nil
+    end
   end
 
-  local ok, result = pcall(chunk)
+  local ok, mod = pcall(require, "colorscheme")
   if not ok then
-    vim.notify("❌ Runtime error:\n" .. result, vim.log.levels.ERROR)
+    vim.notify("❌ colorscheme load error:\n" .. tostring(mod), vim.log.levels.ERROR)
     return
   end
 
-  vim.cmd("colorscheme " .. name)
-  vim.cmd("redraw!")
+  local ok2, err = pcall(mod.load)
+  if not ok2 then
+    vim.notify("❌ colorscheme apply error:\n" .. tostring(err), vim.log.levels.ERROR)
+    return
+  end
 
-  vim.notify("✅ Live reload (unsaved): " .. name, vim.log.levels.INFO)
+  vim.cmd("redraw!")
+  vim.notify("✅ Theme reloaded: southernlights", vim.log.levels.INFO)
 end
 
 vim.api.nvim_create_user_command("ReloadTheme", reload_theme_live, {})

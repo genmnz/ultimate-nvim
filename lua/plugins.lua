@@ -6,7 +6,6 @@ vim.pack.add({
 	"https://www.github.com/nvim-tree/nvim-tree.lua",
 	{
 		src = "https://github.com/nvim-treesitter/nvim-treesitter",
-		branch = "main",
 		build = ":TSUpdate",
 	},
   	-- Language Server Protocols
@@ -18,6 +17,8 @@ vim.pack.add({
 		version = vim.version.range("1.*"),
 	},
 	"https://github.com/L3MON4D3/LuaSnip",
+	-- Offline dictionary + thesaurus (synonyms) completion for prose/novel writing
+	"https://github.com/archie-judd/blink-cmp-words",
 })
 
 local function packadd(name)
@@ -34,61 +35,80 @@ packadd("mason.nvim")
 packadd("efmls-configs-nvim")
 packadd("blink.cmp")
 packadd("LuaSnip")
+packadd("blink-cmp-words")
 
 -- ============================================================================
 -- PLUGIN CONFIGS
 -- ============================================================================
 
-local setup_treesitter = function()
-	local treesitter = require("nvim-treesitter")
-	treesitter.setup({})
-	local ensure_installed = {
+-- nvim-treesitter (master branch): compiles parsers directly with a C compiler.
+-- Force gcc, since tree-sitter's default cl.exe (MSVC) isn't installed on this machine.
+require("nvim-treesitter.install").compilers = { "gcc" }
+require("nvim-treesitter.configs").setup({
+	ensure_installed = {
+		-- editor essentials
 		"lua",
 		"vim",
 		"vimdoc",
-		"rust",
+		"r",
+		"python",
+		"typescript",
+		"tsx",
+		"javascript",
 		"html",
 		"css",
-		"javascript",
 		"json",
-		"markdown",
-		"typescript",
 		"bash",
-		"lua",
-		"python",
+		-- writing (book / scripts / editorial)
+		"markdown",
+		"markdown_inline",
+		-- disabled for now — uncomment to re-enable:
+		-- "rust",
 		-- "c",
-		-- "go",
-		-- "cpp",
-		-- "vue",
-		-- "svelte",
-	}
+	},
+	sync_install = false,
+	auto_install = false,
+	highlight = { enable = true },
+	indent = { enable = true },
+})
 
-	local config = require("nvim-treesitter.config")
-	local already_installed = config.get_installed()
-	local parsers_to_install = {}
-
-	for _, parser in ipairs(ensure_installed) do
-		if not vim.tbl_contains(already_installed, parser) then
-			table.insert(parsers_to_install, parser)
-		end
+-- Compatibility shim for nvim-treesitter's FROZEN `master` branch on Neovim 0.12+.
+-- Its markdown code-fence injection directives index a query match as a single
+-- TSNode (registered with all=false), but Neovim 0.12 removed that compat so a
+-- match capture is now a list (TSNode[]). The mismatch throws
+--   "attempt to call method 'range' (a nil value)"
+-- when opening markdown with ``` fenced code blocks. Re-register the affected
+-- directives with all=true and pull the first node ourselves.
+-- Refs: nvim-treesitter#8636, nvim-treesitter#8618, neovim#39032.
+do
+	local tsq = vim.treesitter.query
+	local function first_node(v)
+		if type(v) == "table" then return v[1] end
+		return v
 	end
 
-	if #parsers_to_install > 0 then
-		treesitter.install(parsers_to_install)
+	local injection_aliases = { ex = "elixir", pl = "perl", sh = "bash", uxn = "uxntal", ts = "typescript" }
+	local function lang_from_info_string(alias)
+		local m = vim.filetype.match({ filename = "a." .. alias })
+		return m or injection_aliases[alias] or alias
 	end
 
-	local group = vim.api.nvim_create_augroup("TreeSitterConfig", { clear = true })
-	vim.api.nvim_create_autocmd("FileType", {
-		group = group,
-		callback = function(args)
-			if vim.list_contains(treesitter.get_installed(), vim.treesitter.language.get_lang(args.match)) then
-				vim.treesitter.start(args.buf)
-			end
-		end,
-	})
+	tsq.add_directive("set-lang-from-info-string!", function(match, _, bufnr, pred, metadata)
+		local node = first_node(match[pred[2]])
+		if not node then return end
+		local alias = vim.treesitter.get_node_text(node, bufnr):lower()
+		metadata["injection.language"] = lang_from_info_string(alias)
+	end, { force = true, all = true })
+
+	tsq.add_directive("downcase!", function(match, _, bufnr, pred, metadata)
+		local id = pred[2]
+		local node = first_node(match[id])
+		if not node then return end
+		local text = vim.treesitter.get_node_text(node, bufnr, { metadata = metadata[id] }) or ""
+		if not metadata[id] then metadata[id] = {} end
+		metadata[id].text = string.lower(text)
+	end, { force = true, all = true })
 end
-
-setup_treesitter()
 
 require("nvim-tree").setup({
 	view = {
@@ -112,7 +132,12 @@ vim.api.nvim_set_hl(0, "NvimTreeNormal", { bg = "none" })
 vim.api.nvim_set_hl(0, "NvimTreeWinSeparator", { fg = "#2a2a2a", bg = "none" })
 vim.api.nvim_set_hl(0, "NvimTreeEndOfBuffer", { bg = "none" })
 
-require("fzf-lua").setup({})
+-- Minimal fzf-lua: the "default" profile gives sensible fuzzy defaults.
+-- Two pickers cover the ask: `files()` = filename search, `live_grep()` = fuzzy content search.
+require("fzf-lua").setup({
+	"default",
+	winopts = { height = 0.85, width = 0.85, preview = { layout = "vertical" } },
+})
 
 vim.keymap.set("n", "<leader>ff", function()
 	require("fzf-lua").files()
@@ -143,6 +168,9 @@ require("mini.trailspace").setup({})
 require("mini.bufremove").setup({})
 require("mini.notify").setup({})
 require("mini.icons").setup({})
+-- Let plugins that look for nvim-web-devicons (e.g. nvim-tree) use mini.icons,
+-- so the file tree shows the same per-filetype/language icons as the statusline.
+require("mini.icons").mock_nvim_web_devicons()
 require("mini.indentscope").setup({
 	draw = {
 	options = {border = 'both',
@@ -154,12 +182,12 @@ require("mini.indentscope").setup({
 
 require("gitsigns").setup({
 	signs = {
-		add = { text = "\u{2590}" }, -- ▏
-		change = { text = "\u{2590}" }, -- ▐
-		delete = { text = "\u{2590}" }, -- ◦
-		topdelete = { text = "\u{25e6}" }, -- ◦
-		changedelete = { text = "\u{25cf}" }, -- ●
-		untracked = { text = "\u{25cb}" }, -- ○
+		add = { text = "+" }, -- green  (GitSignsAdd)
+		change = { text = "~" }, -- blue   (GitSignsChange)
+		delete = { text = "_" }, -- red    (GitSignsDelete)
+		topdelete = { text = "‾" }, -- red    (GitSignsTopdelete)
+		changedelete = { text = "~" }, -- blue   (GitSignsChangedelete)
+		untracked = { text = "┆" }, -- muted  (GitSignsUntracked)
 	},
 	signcolumn = true,
 	current_line_blame = false,
@@ -197,13 +225,14 @@ end, { desc = "Diff this" })
 local luasnip = require("luasnip")
 
 require("blink.cmp").setup({
-	highlight = {
-		bg = "#FF03F7",	
-	},
+	-- highlight = {
+	-- 	bg = "#FF03F7",	
+	-- },
 	snippet = {
-		 expand = function(snippet)
-        require("luasnip").lsp_expand(snippet.body)
-    end,
+		-- blink passes the snippet as a string (not a table); pass it straight to luasnip
+		expand = function(snippet)
+			require("luasnip").lsp_expand(snippet)
+		end,
 	},
 	keymap = {
 		preset = "default",

@@ -1,42 +1,45 @@
 -- vim.opt.cursorline = true
 
-
 local c = {
     float_bg = (vim.fn.has("nvim-0.11") == 0 or vim.o.winborder == "none") and "#000000"
         or "#000000",
-    windiv_bg = "#585858",
+    windiv_bg = "#3d3d3d",
     function_fg = "#87d7ff",
+    function_call_fg = "#ffc1e2", -- function/method CALLS (distinct from declarations)
     title_fg = "#00d7ff",
-    -- normal_fg = "#dadada",
-    normal_fg = "#5fafff", -- #B0B5B9 gray for normal text, also used for cursor foreground
+    normal_fg = "#dadada",
+    -- normal_fg = "#5fafff", -- #B0B5B9 gray for normal text, also used for cursor foreground
     error_bg = "#ff0000",
     warn_fg = "#ff7700",
     info_fg = "#a3ff3a",
     hint_fg = "#2bffff",
-    numbers_fg = "#ff0000",
+    numbers_fg = "#ff0000", -- for cursor line number 
     pink = "#ff5f87", -- for keywords and such, also used for cursor line number highlight
     bright_blue = "#5fafff",
-    -- numbers_fg --for cursor line number highlight
+    yellowish = "#ffff5f",
+    bluish = "#87d7ff",
+    sky = "#00ffff",
+    black = "#000000"
 }
 
-local basic_tbl = {
-    Normal = { fg = c.normal_fg, bg = "#000000" },
+local colors = {
+    Normal = { fg = c.normal_fg, bg = c.black },
     Boolean = { fg = "#ff875f" },
     Comment = { fg = "#62628A"}, -- afafff
     Conditional = { fg = "#ffff87" },
     Constant = { fg = "#d7ffd7" },
-    Cursor = { fg = "#000000", bg = "#00ff00", bold = true },
+    Cursor = { fg = c.black, bg = "#5fafff", bold = true },
     CursorColumn = { bg = "#262626" },
-    DiffAdd = { fg = "#ffff5f", bg = "#005f00" },
-    DiffChange = { fg = "#ffff5f", bg = "#5f5f00" },
-    DiffDelete = { fg = "#ffff5f", bg = "#870000" },
+    DiffAdd = { fg = c.yellowish, bg = "#005f00" },
+    DiffChange = { fg = c.yellowish, bg = "#5f5f00" },
+    DiffDelete = { fg = c.yellowish, bg = "#870000" },
     DiffText = { fg = "#ffff00", bg = "#870000" },
     Directory = { fg = "#00afff" },
     Emphasis = { italic = true },
     EndOfBuffer = { fg = "#0000af" },
     Error = { fg = "#ffffff", bg = "#ff0000" },
     Exception = { fg = "#eecc00" },
-    Folded = { fg = "#00ffff", bg = c.windiv_bg },
+    Folded = { fg = c.sky, bg = c.windiv_bg },
     Function = { fg = c.function_fg },
     Identifier = { fg = "#5fffd7" },
     Ignore = { fg = "#6c6c6c" },
@@ -44,6 +47,8 @@ local basic_tbl = {
     Keyword = { fg = "#d7ffaf" },
     Label = { fg = "#F85656" },
     Method = { fg = c.function_fg, italic = true },
+    FunctionCall = { fg = c.function_call_fg },
+    MethodCall = { fg = c.function_call_fg, italic = true },
     MoreMsg = { fg = "#00af87" },
     NonText = { fg = "#545476" }, -- rainbow region
     NormalFloat = { fg = c.normal_fg, bg = c.float_bg },
@@ -58,38 +63,40 @@ local basic_tbl = {
     Quote = { fg = "#ffffc0" },
     Repeat = { fg = "#d7ff87" },
     Search = { fg = "#ffffff", bg = "#5f5f00" },
-    SignColumn = { fg = "#ffff5f", bg = c.windiv_bg },
+    SignColumn = { fg = c.yellowish, bg = c.windiv_bg },
     Special = { fg = "#ffd75f" },
-    SpecialKey = { fg = "#00ffff" },
+    SpecialKey = { fg = c.sky },
     SpellBad = { sp = "#ff0000", undercurl = true },
-    SpellCap = { sp = "#00ffff", undercurl = true },
+    SpellCap = { sp = c.sky, undercurl = true },
     SpellLocal = { sp = "#00ff00", undercurl = true },
     SpellRare = { sp = "#ff00ff", undercurl = true },
     Statement = { fg = "#ffff00" },
-    StatusLine = { fg = "#000000", bg = "#4e4e4e" },
+    StatusLine = { fg = c.black, bg = "#4e4e4e" },
     StatusLineNC = { fg = "#838383", bg = "none" },
-    LineNr = { bg = "#000000" },
+    LineNr = { bg = c.black },
     CursorLineNr = { fg = c.numbers_fg, bg = "none", bold = true },
 
     StorageClass = { fg = "#87d75f" },
-    String = { fg = "#ffffaf" },
+    String = { fg = "#ffffb9" },
     Strong = { bold = true },
     Structure = { fg = "#5fd7af" }, -- as {{/}}
-    TabLineFill = { fg = "#000000", bg = "#262626" },
-    TabLineSel = { fg = "#000000", bg = "#808080" },
+    TabLineFill = { fg = c.black, bg = "#262626" },
+    TabLineSel = { fg = c.black, bg = "#808080" },
     Title = { bold = true, fg = c.title_fg },
     Title2 = { fg = c.title_fg },
     Title3 = { fg = "#00b7df" },
     Title4 = { fg = "#0097bf" },
-    Todo = { fg = "#000000", bg = "#ffff00" },
+    Todo = { fg = c.black, bg = "#ffff00" },
     Type = { fg = "#5fd75f" },
-    Typedef = { fg = "#87d7af" },
+    -- Typedef = { fg = "#87d7af" },
+    TypeBuilt = { fg = "#f0ded0" },
+    Typedef = { fg = "#ffa35c" },
     Underlined = { underline = true },
     Variable = { fg = "#bffce8" },
     -- Visual = { fg = "#a8a8a8", bg = "#3a3a3a" },
     VisualNOS = { bold = true, underline = true },
     WarningMsg = { fg = c.warn_fg },
-    WinSeparator = { fg = c.windiv_bg, bg = "#000000" },
+    WinSeparator = { fg = c.windiv_bg, bg = c.black },
     MiniIndentscopeSymbol = { fg = "#808080" },
     MiniIndentscopePrefix = { fg = "#d7ffaf" },
 
@@ -111,12 +118,20 @@ local basic_tbl = {
     mailQuoted6 = { fg = "#0000ff" },
 
     -- diff
-    diffAdded = { fg = "#00d700" },
-    diffRemoved = { fg = "#ff8787" },
-    diffFile = { fg = "#87d7ff" },
-    diffOldFile = { fg = "#87d7ff" },
-    diffNewFile = { fg = "#87d7ff" },
+    diffAdded = { fg = "#238aff" },
+    diffRemoved = { fg = "#ff4c4c" },
+    diffFile = { fg = c.bluish },
+    diffOldFile = { fg = c.bluish },
+    diffNewFile = { fg = c.bluish },
     diffLine = { fg = "#ff00dd" },
+
+    -- gitsigns (left sign column): green added, blue changed, red deleted
+    GitSignsAdd = { fg = "#00d75f", bg = "none" },
+    GitSignsChange = { fg = c.bright_blue, bg = "none" },
+    GitSignsDelete = { fg = "#ff2a2a", bg = "none" },
+    GitSignsTopdelete = { fg = "#ff2a2a", bg = "none" },
+    GitSignsChangedelete = { fg = c.bright_blue, bg = "none" },
+    GitSignsUntracked = { fg = "#4a4a4a", bg = "none" },
 
     -- Vim help
     helpHyperTextEntry = { fg = "#00afff" },
@@ -149,149 +164,149 @@ local basic_tbl = {
     healthWarning = { fg = "#d08000" },
 }
 
-local link_tbl = {
+local link_colors = {
     -- Basic highlight groups
-    StatusLineTermNC = basic_tbl.StatusLineNC,
-    VertSplit = basic_tbl.StatusLineNC,
-    LineNr = basic_tbl.StatusLineNC,
-    -- CursorLineNr = basic_tbl.StatusLineNC,
-    TabLine = basic_tbl.StatusLineNC,
-    StatusLineTerm = basic_tbl.StatusLine,
-    Float = basic_tbl.Number,
-    Character = basic_tbl.Number,
-    ModeMsg = basic_tbl.Normal,
-    WildMenu = basic_tbl.Todo,
-    CursorLine = basic_tbl.CursorColumn,
-    ColorColumn = basic_tbl.CursorColumn,
-    Delimiter = basic_tbl.Special,
-    Conceal = basic_tbl.Special,
-    IncSearch = basic_tbl.Search,
-    MatchParen = basic_tbl.Search,
-    ErrorMsg = basic_tbl.Error,
-    FoldColumn = basic_tbl.Folded,
-    Question = basic_tbl.Typedef,
-    htmlUnderline = basic_tbl.Underlined,
+    StatusLineTermNC = colors.StatusLineNC,
+    VertSplit = colors.StatusLineNC,
+    LineNr = colors.StatusLineNC,
+    -- CursorLineNr = colors.StatusLineNC,
+    TabLine = colors.StatusLineNC,
+    StatusLineTerm = colors.StatusLine,
+    Float = colors.Number,
+    Character = colors.Number,
+    ModeMsg = colors.Normal,
+    WildMenu = colors.Todo,
+    CursorLine = colors.CursorColumn,
+    ColorColumn = colors.CursorColumn,
+    Delimiter = colors.Special,
+    Conceal = colors.Special,
+    IncSearch = colors.Search,
+    MatchParen = colors.Search,
+    ErrorMsg = colors.Error,
+    FoldColumn = colors.Folded,
+    Question = colors.Typedef,
+    htmlUnderline = colors.Underlined,
 
     -- More diagnostic groups
-    LspCodeLens = basic_tbl.Comment,
-    DiagnosticUnnecessary = basic_tbl.Ignore,
-    DiagnosticVirtualTextError = basic_tbl.Error,
-    DiagnosticVirtualTextWarn = basic_tbl.WarningMsg,
+    LspCodeLens = colors.Comment,
+    DiagnosticUnnecessary = colors.Ignore,
+    DiagnosticVirtualTextError = colors.Error,
+    DiagnosticVirtualTextWarn = colors.WarningMsg,
+
+
 
     -- Treesitter
-
-    -- From https://github.com/nvim-treesitter/nvim-treesitter/blob/master/CONTRIBUTING.md
+    -- From https://github.com/nvim-treesitter/nvim-treesitter/blob/master/
     -- Identifiers
-    ["@variable"] = basic_tbl.Normal, -- various variable names
-    ["@variable.builtin"] = basic_tbl.Special, -- built-in variable names (e.g. `this`)
-    ["@variable.parameter"] = basic_tbl.Variable, -- parameters of a function
-    ["@variable.parameter.builtin"] = basic_tbl.Comment, -- special parameters (e.g. `_`, `it`)
-    ["@variable.member"] = basic_tbl.Variable, -- object and struct fields
-    ["@constant"] = basic_tbl.Constant, -- constant identifiers
-    ["@constant.builtin"] = basic_tbl.Constant, -- built-in constant values
-    ["@constant.macro"] = basic_tbl.PreProc, -- constants defined by the preprocessor
-    ["@module"] = basic_tbl.StorageClass, -- modules or namespaces
-    ["@module.builtin"] = basic_tbl.Include, -- built-in modules or namespaces
-    ["@label"] = basic_tbl.Label, -- GOTO and other labels (e.g. `label:` in C), including heredoc labels
+    ["@variable"] = colors.Normal, -- various variable names
+    ["@variable.builtin"] = colors.Special, -- built-in variable names (e.g. `this`)
+    ["@variable.parameter"] = colors.Variable, -- parameters of a function
+    ["@variable.parameter.builtin"] = colors.Comment, -- special parameters (e.g. `_`, `it`)
+    ["@variable.member"] = colors.Variable, -- object and struct fields
+    ["@constant"] = colors.Constant, -- constant identifiers
+    ["@constant.builtin"] = colors.Constant, -- built-in constant values
+    ["@constant.macro"] = colors.PreProc, -- constants defined by the preprocessor
+    ["@module"] = colors.StorageClass, -- modules or namespaces
+    ["@module.builtin"] = colors.Include, -- built-in modules or namespaces
+    ["@label"] = colors.Label, -- GOTO and other labels (e.g. `label:` in C), including heredoc labels
 
     -- Literals
-    ["@string"] = basic_tbl.String, -- string literals
-    ["@string.documentation"] = basic_tbl.String, -- string documenting code (e.g. Python docstrings)
-    ["@string.regexp"] = basic_tbl.Special, -- regular expressions
-    ["@string.escape"] = basic_tbl.Special, -- escape sequences
-    ["@string.special"] = basic_tbl.Special, -- other special strings (e.g. dates)
-    ["@string.special.symbol"] = basic_tbl.Special, -- symbols or atoms
-    ["@string.special.url"] = basic_tbl.htmlLink, -- URIs (e.g. hyperlinks)
-    ["@string.special.path"] = basic_tbl.Special, -- filenames
-    ["@character"] = basic_tbl.Number, -- character literals
-    ["@character.special"] = basic_tbl.Special, -- special characters (e.g. wildcards)
-    ["@boolean"] = basic_tbl.Boolean, -- boolean literals
-    ["@number"] = basic_tbl.Number, -- numeric literals
-    ["@number.float"] = basic_tbl.Number, -- floating-point number literals
+    ["@string"] = colors.String, -- string literals
+    ["@string.documentation"] = colors.String, -- string documenting code (e.g. Python docstrings)
+    ["@string.regexp"] = colors.Special, -- regular expressions
+    ["@string.escape"] = colors.Special, -- escape sequences
+    ["@string.special"] = colors.Special, -- other special strings (e.g. dates)
+    ["@string.special.symbol"] = colors.Special, -- symbols or atoms
+    ["@string.special.url"] = colors.htmlLink, -- URIs (e.g. hyperlinks)
+    ["@string.special.path"] = colors.Special, -- filenames
+    ["@character"] = colors.Number, -- character literals
+    ["@character.special"] = colors.Special, -- special characters (e.g. wildcards)
+    ["@boolean"] = colors.Boolean, -- boolean literals
+    ["@number"] = colors.Number, -- numeric literals
+    ["@number.float"] = colors.Number, -- floating-point number literals
 
     -- Types
-    ["@type"] = basic_tbl.Type, -- type or class definitions and annotations
-    ["@type.builtin"] = basic_tbl.Type, -- built-in types
-    ["@type.definition"] = basic_tbl.Type, -- identifiers in type definitions (e.g. `typedef <type> <identifier>` in C)
-    ["@attribute"] = basic_tbl.Label, -- attribute annotations (e.g. Python decorators, Rust lifetimes)
-    ["@attribute.builtin"] = basic_tbl.Label, -- builtin annotations (e.g. `@property` in Python)
-    ["@property"] = basic_tbl.Label, -- the key in key/value pairs
+    ["@type"] = colors.Type, -- type or class definitions and annotations
+    ["@type.builtin"] = colors.TypeBuilt, -- built-in types
+    ["@type.definition"] = colors.Typedef, -- identifiers in type definitions (e.g. `typedef <type> <identifier>` in C)
+    ["@attribute"] = colors.Label, -- attribute annotations (e.g. Python decorators, Rust lifetimes)
+    ["@attribute.builtin"] = colors.Label, -- builtin annotations (e.g. `@property` in Python)
+    ["@property"] = colors.Label, -- the key in key/value pairs
 
     -- Functions
-
-    ["@function"] = basic_tbl.Function, -- function definitions
-    ["@function.builtin"] = basic_tbl.Function, -- built-in functions
-    ["@function.call"] = basic_tbl.Function, -- function calls
-    ["@function.macro"] = basic_tbl.PreProc, -- preprocessor macros
-    ["@function.method"] = basic_tbl.Method, -- method definitions
-    ["@function.method.call"] = basic_tbl.Method, -- method calls
-    ["@constructor"] = basic_tbl.Structure, -- constructor calls and definitions
-    ["@operator"] = basic_tbl.Operator, -- symbolic operators (e.g. `+` / `*`)
+    ["@function"] = colors.Function, -- function definitions
+    ["@function.builtin"] = colors.Function, -- built-in functions
+    ["@function.call"] = colors.FunctionCall, -- function calls
+    ["@function.macro"] = colors.PreProc, -- preprocessor macros
+    ["@function.method"] = colors.Method, -- method definitions
+    ["@function.method.call"] = colors.MethodCall, -- method calls
+    ["@constructor"] = colors.Structure, -- constructor calls and definitions
+    ["@operator"] = colors.Operator, -- symbolic operators (e.g. `+` / `*`)
 
     -- Keywords
-    ["@keyword"] = basic_tbl.Keyword, -- keywords not fitting into specific categories
-    ["@keyword.coroutine"] = basic_tbl.Repeat, -- keywords related to coroutines (e.g. `go` in Go, `async/await` in Python)
-    ["@keyword.function"] = basic_tbl.Function, -- keywords that define a function (e.g. `func` in Go, `def` in Python)
-    ["@keyword.operator"] = basic_tbl.Operator, -- operators that are English words (e.g. `and` / `or`)
-    ["@keyword.import"] = basic_tbl.Include, -- keywords for including or exporting modules (e.g. `import` / `from` in Python)
-    ["@keyword.type"] = basic_tbl.Type, -- keywords describing namespaces and composite types (e.g. `struct`, `enum`)
-    ["@keyword.modifier"] = basic_tbl.Label, -- keywords modifying other constructs (e.g. `const`, `static`, `public`)
-    ["@keyword.repeat"] = basic_tbl.Repeat, -- keywords related to loops (e.g. `for` / `while`)
-    ["@keyword.return"] = basic_tbl.Keyword, -- keywords like `return` and `yield`
-    ["@keyword.debug"] = basic_tbl.Exception, -- keywords related to debugging
-    ["@keyword.exception"] = basic_tbl.Exception, -- keywords related to exceptions (e.g. `throw` / `catch`)
-    ["@keyword.conditional"] = basic_tbl.Conditional, -- keywords related to conditionals (e.g. `if` / `else`)
-    ["@keyword.conditional.ternary"] = basic_tbl.Operator, -- ternary operator (e.g. `?` / `:`)
-    ["@keyword.directive"] = basic_tbl.Statement, -- various preprocessor directives & shebangs
-    ["@keyword.directive.define"] = basic_tbl.Statement, -- preprocessor definition directives
+    ["@keyword"] = colors.Keyword, -- keywords not fitting into specific categories
+    ["@keyword.coroutine"] = colors.Repeat, -- keywords related to coroutines (e.g. `go` in Go, `async/await` in Python)
+    ["@keyword.function"] = colors.Keyword, -- the `function`/`def` keyword (distinct from the function name)
+    ["@keyword.operator"] = colors.Operator, -- operators that are English words (e.g. `and` / `or`)
+    ["@keyword.import"] = colors.Include, -- keywords for including or exporting modules (e.g. `import` / `from` in Python)
+    ["@keyword.type"] = colors.Keyword, -- the `class`/`struct`/`enum` keyword (distinct from the type name)
+    ["@keyword.modifier"] = colors.Label, -- keywords modifying other constructs (e.g. `const`, `static`, `public`)
+    ["@keyword.repeat"] = colors.Repeat, -- keywords related to loops (e.g. `for` / `while`)
+    ["@keyword.return"] = colors.Keyword, -- keywords like `return` and `yield`
+    ["@keyword.debug"] = colors.Exception, -- keywords related to debugging
+    ["@keyword.exception"] = colors.Exception, -- keywords related to exceptions (e.g. `throw` / `catch`)
+    ["@keyword.conditional"] = colors.Conditional, -- keywords related to conditionals (e.g. `if` / `else`)
+    ["@keyword.conditional.ternary"] = colors.Operator, -- ternary operator (e.g. `?` / `:`)
+    ["@keyword.directive"] = colors.Statement, -- various preprocessor directives & shebangs
+    ["@keyword.directive.define"] = colors.Statement, -- preprocessor definition directives
 
     -- Punctuation
-    ["@punctuation.delimiter"] = basic_tbl.Special, -- delimiters (e.g. `;` / `.` / `,`)
-    ["@punctuation.bracket"] = basic_tbl.Special, -- brackets (e.g. `()` / `{}` / `[]`)
-    ["@punctuation.special"] = basic_tbl.Special, -- special symbols (e.g. `{}` in string interpolation)
+    ["@punctuation.delimiter"] = colors.Special, -- delimiters (e.g. `;` / `.` / `,`)
+    ["@punctuation.bracket"] = colors.Special, -- brackets (e.g. `()` / `{}` / `[]`)
+    ["@punctuation.special"] = colors.Special, -- special symbols (e.g. `{}` in string interpolation)
 
     -- Comments
-    ["@comment"] = basic_tbl.Comment, -- line and block comments
+    ["@comment"] = colors.Comment, -- line and block comments
     ["@comment.documentation"] = { fg = "#dac0df" }, -- comments documenting code
-    ["@comment.error"] = basic_tbl.Error, -- error-type comments (e.g. `ERROR`, `FIXME`, `DEPRECATED`)
-    ["@comment.warning"] = basic_tbl.WarningMsg, -- warning-type comments (e.g. `WARNING`, `FIX`, `HACK`)
-    ["@comment.todo"] = basic_tbl.Todo, -- todo-type comments (e.g. `TODO`, `WIP`)
-    ["@comment.note"] = basic_tbl.MoreMsg, -- note-type comments (e.g. `NOTE`, `INFO`, `XXX`)
+    ["@comment.error"] = colors.Error, -- error-type comments (e.g. `ERROR`, `FIXME`, `DEPRECATED`)
+    ["@comment.warning"] = colors.WarningMsg, -- warning-type comments (e.g. `WARNING`, `FIX`, `HACK`)
+    ["@comment.todo"] = colors.Todo, -- todo-type comments (e.g. `TODO`, `WIP`)
+    ["@comment.note"] = colors.MoreMsg, -- note-type comments (e.g. `NOTE`, `INFO`, `XXX`)
 
     -- Markup - Mainly for markup languages.
-    ["@markup.strong"] = basic_tbl.Strong, -- bold text
-    ["@markup.italic"] = basic_tbl.Emphasis, -- italic text
+    ["@markup.strong"] = colors.Strong, -- bold text
+    ["@markup.italic"] = colors.Emphasis, -- italic text
     ["@markup.strikethrough"] = { strikethrough = true }, -- struck-through text
-    ["@markup.underline"] = basic_tbl.Underlined, -- underlined text (only for literal underline markup!)
-    ["@markup.heading"] = basic_tbl.Title, -- headings, titles (including markers)
-    ["@markup.heading.1"] = basic_tbl.Title, -- top-level heading
-    ["@markup.heading.2"] = basic_tbl.Title2, -- section heading
-    ["@markup.heading.3"] = basic_tbl.Title3, -- subsection heading
-    ["@markup.heading.4"] = basic_tbl.Title4, -- and so on
-    ["@markup.heading.5"] = basic_tbl.Title4, -- and so forth
-    ["@markup.heading.6"] = basic_tbl.Title4, -- six levels ought to be enough for anybody
-    ["@markup.quote"] = basic_tbl.Quote, -- block quotes
-    ["@markup.math"] = basic_tbl.Special, -- math environments (e.g. `$ ... $` in LaTeX)
-    ["@markup.link"] = basic_tbl.htmlLink, -- text references, footnotes, citations, etc.
-    ["@markup.link.label"] = basic_tbl.Label, -- link, reference descriptions
-    ["@markup.link.url"] = basic_tbl.htmlLink, -- URL-style links
-    ["@markup.raw"] = basic_tbl.String, -- literal or verbatim text (e.g. inline code)
-    ["@markup.raw.block"] = basic_tbl.String, -- literal or verbatim text as a stand-alone block
-    ["@markup.list"] = basic_tbl.StorageClass, -- list markers
-    ["@markup.list.checked"] = basic_tbl.MoreMsg, -- checked todo-style list markers
-    ["@markup.list.unchecked"] = basic_tbl.WarningMsg, -- unchecked todo-style list markers
-    ["@diff.plus"] = basic_tbl.diffAdded, -- added text (for diff files)
-    ["@diff.minus"] = basic_tbl.diffRemoved, -- deleted text (for diff files)
-    ["@diff.delta"] = basic_tbl.diffLine, -- changed text (for diff files)
-    ["@tag"] = basic_tbl.Label, -- XML-style tag names (and similar)
-    ["@tag.builtin"] = basic_tbl.Label, -- builtin tag names (e.g. HTML5 tags)
-    ["@tag.attribute"] = basic_tbl.Label, -- XML-style tag attributes
-    ["@tag.delimiter"] = basic_tbl.Special, -- XML-style tag delimiters
+    ["@markup.underline"] = colors.Underlined, -- underlined text (only for literal underline markup!)
+    ["@markup.heading"] = colors.Title, -- headings, titles (including markers)
+    ["@markup.heading.1"] = colors.Title, -- top-level heading
+    ["@markup.heading.2"] = colors.Title2, -- section heading
+    ["@markup.heading.3"] = colors.Title3, -- subsection heading
+    ["@markup.heading.4"] = colors.Title4, -- and so on
+    ["@markup.heading.5"] = colors.Title4, -- and so forth
+    ["@markup.heading.6"] = colors.Title4, -- six levels ought to be enough for anybody
+    ["@markup.quote"] = colors.Quote, -- block quotes
+    ["@markup.math"] = colors.Special, -- math environments (e.g. `$ ... $` in LaTeX)
+    ["@markup.link"] = colors.htmlLink, -- text references, footnotes, citations, etc.
+    ["@markup.link.label"] = colors.Label, -- link, reference descriptions
+    ["@markup.link.url"] = colors.htmlLink, -- URL-style links
+    ["@markup.raw"] = colors.String, -- literal or verbatim text (e.g. inline code)
+    ["@markup.raw.block"] = colors.String, -- literal or verbatim text as a stand-alone block
+    ["@markup.list"] = colors.StorageClass, -- list markers
+    ["@markup.list.checked"] = colors.MoreMsg, -- checked todo-style list markers
+    ["@markup.list.unchecked"] = colors.WarningMsg, -- unchecked todo-style list markers
+    ["@diff.plus"] = colors.diffAdded, -- added text (for diff files)
+    ["@diff.minus"] = colors.diffRemoved, -- deleted text (for diff files)
+    ["@diff.delta"] = colors.diffLine, -- changed text (for diff files)
+    ["@tag"] = colors.Label, -- XML-style tag names (and similar)
+    ["@tag.builtin"] = colors.Label, -- builtin tag names (e.g. HTML5 tags)
+    ["@tag.attribute"] = colors.Label, -- XML-style tag attributes
+    ["@tag.delimiter"] = colors.Special, -- XML-style tag delimiters
 
-    wdiffOld = basic_tbl.diffRemoved,
-    wdiffNew = basic_tbl.diffAdded,
+    wdiffOld = colors.diffRemoved,
+    wdiffNew = colors.diffAdded,
 
-    mailURL = basic_tbl.htmlLink,
+
 }
 
 local M = {}
@@ -302,12 +317,16 @@ M.load = function()
     vim.o.termguicolors = true
     vim.g.colors_name = "southernlights"
 
-    for k, v in pairs(basic_tbl) do
+    for k, v in pairs(colors) do
         vim.api.nvim_set_hl(0, k, v)
     end
-    for k, v in pairs(link_tbl) do
+    for k, v in pairs(link_colors) do
         vim.api.nvim_set_hl(0, k, v)
     end
+
+    -- Let listeners (e.g. the markdown theme in lua/md.lua) re-apply their
+    -- overrides after the base theme is (re)loaded, including on :ReloadTheme.
+    vim.api.nvim_exec_autocmds("ColorScheme", { pattern = "southernlights", modeline = false })
 end
 
 return M

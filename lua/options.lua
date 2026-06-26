@@ -68,8 +68,8 @@ vim.opt.modifiable = true -- allow buffer modifications
 vim.opt.encoding = "utf-8" -- set encoding
 
 vim.opt.guicursor =
-	"n-v-c:block,i-ci-ve:block,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175" -- cursor blinking and settings
-vim.opt.guifont = "JetBrainsMono Nerd Font:h12,Symbols Nerd Font:h12"
+	"n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175" -- block in normal/visual/command, thin bar in insert
+vim.opt.guifont = "JetBrainsMono NF:h12"
 
 -- Folding: requires treesitter available at runtime; safe fallback if not
 vim.opt.foldmethod = "expr" -- use expression for folding
@@ -113,7 +113,7 @@ vim.keymap.set('n', '<leader>h', ':nohlsearch<CR>')
 vim.g.background = "dark"
 vim.opt.signcolumn = "auto"
 vim.opt.updatetime = 250
-vim.opt.timeoutlen = 300
+vim.opt.timeoutlen = 500
 vim.opt.list = true
 vim.opt.listchars = {
     tab = "› ",
